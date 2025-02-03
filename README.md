@@ -289,6 +289,9 @@ The service should convert this image into grayscale:
 
 While running the launch files, you might notice that the converted image is saved at a specific location. Go to `workspace/install/sine_wave/share/sine_wave/image`, and you can observe the converted image `grayscale_image.png` for Python service and `grayscale_image_cpp.png` for C++ service.
 
+![demo_grayscale_image](sine_wave/image/demo_grayscale_image.png)
+
+
 
 ## (Extra) Dockerfile
 
