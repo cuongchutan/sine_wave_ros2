@@ -5,32 +5,33 @@ These tasks has been done by Cuong Chu Tan (cuongchutan@gmail.com) to apply for 
 
 ## List of tasks
 
-0. [Preparations](#prepare)
-1. [Publisher/Subscriber](#pub/sub)
-  - [Creation of a ROS2 publisher node](#1.1)
-    - [C++](#1.1.1)
-    - [Python](#1.1.2)
-  - [Creation of a ROS2 subscriber node](#1.2)
-    - [C++](#1.2.1)
-    - [Python](#1.2.2)
-  - [Generate parameter library](#1.3)
-  - [Launch files](#1.4)
-    - [C++](#1.4.1)
-    - [Python](#1.4.2)
-  - [Visualization of the sine wave](#1.5)
-    - [C++](#1.5.1)
-    - [Python](#1.5.2)
-2. [Service](#srv)
-  - [Extending the publisher and subscriber](#2.1)
-    - [C++](#2.1.1)
-    - [Python](#2.1.2)
-  - [How to see the converted image](#2.2)
-3. [(Extra) Dockerfile](#docker)
-4. [Evaluation Criteria](#evaluate)
-  - [GitHub actions are building the repo](#4.1)
-  - [GitHub actions apply linting and formatting rules](#4.2)
-  - [Unit tests (Python)](#4.3)
-  - [Error Handling](#4.4)
+0. [Preparations](#preparations)
+1. [Publisher/Subscriber](#publishersubscriber)
+   - [Creation of a ROS2 publisher node](#creation-of-a-ros2-publisher-node)
+     - [C++](#cpp)
+     - [Python](#python)
+   - [Creation of a ROS2 subscriber node](#creation-of-a-ros2-subscriber-node)
+     - [C++](#cpp-1)
+     - [Python](#python-1)
+   - [Generate parameter library](#generate-parameter-library)
+   - [Launch files](#launch-files)
+     - [C++](#cpp-2)
+     - [Python](#python-2)
+   - [Visualization of the sine wave](#visualization-of-the-sine-wave)
+     - [C++](#cpp-3)
+     - [Python](#python-3)
+2. [Service](#service)
+   - [Extending the publisher and subscriber](#extending-the-publisher-and-subscriber)
+     - [C++](#cpp-4)
+     - [Python](#python-4)
+   - [How to see the converted image](#how-to-see-the-converted-image)
+3. [(Extra) Dockerfile](#extra-dockerfile)
+4. [Evaluation Criteria](#evaluation-criteria)
+   - [GitHub actions are building the repo](#github-actions-are-building-the-repo)
+   - [GitHub actions apply linting and formatting rules](#github-actions-apply-linting-and-formatting-rules)
+   - [Unit tests (Python)](#unit-tests-python)
+   - [Error Handling](#error-handling)
+
 
 ## Preparations
 
@@ -45,7 +46,7 @@ To examine these tasks, you first have to clone my repository to your local mach
   git clone https://github.com/PickNikRobotics/generate_parameter_library.git 
 ```
 
-There should be 3 packages in your src directory now: ***generate_parameter_library***, ***grayscale_image***, ***sine_wave***
+There should be 3 packages in your src directory now: ***generate_parameter_library***, ***grayscale_image***, ***sine_wave***. Make sure that these packages are in this path `workspace/src/`
 
 Now, let's install all the necessary dependencies and build these packages:
 ```bash
@@ -265,14 +266,26 @@ Similar to C++, but the service's name is `grayscale_srv` and the saved path is 
 ### How to see the converted image
 The service should convert this image into grayscale:
 
-![demo_image](sine_wave/image/sine_wave_cpp_plot.png)
+![demo_image](sine_wave/image/demo_image.png)
 
 While running the launch files, you might notice that the converted image is saved at a specific location. Go to `workspace/install/sine_wave/share/sine_wave/image`, and you can observe the converted image `grayscale_image.png` for Python service and `grayscale_image_cpp.png` for C++ service.
 
 
 ## (Extra) Dockerfile
 
+I unfortunately don't have much experience on Docker. Even though, I have the gist of what I should do, and provide a `Dockerfile` that try to build and run the project from within the docker.
 
+In order to build the docker, go into the `workspace/src/` directory and run:
+```
+  docker build -t ros2_sine_wave .
+```
+where `-t ros2_sine_wave` tags the docker image with the name `ros2_sine_wave`, and `.` indicates that the Dockerfile is in the current directory.
+
+Afterwards, we can test if the image runs as expected by running the container from the image:
+```
+  docker run -it ros2_sine_wave
+```
+However, since the docker is still not fully built, further validation will be tested in the future.
 ## Evaluation Criteria
 
 ### GitHub actions are building the repo
@@ -280,12 +293,15 @@ In my repository, the GitHub actions for builing the repo is provided with the f
 
 Go to my GitHub repository https://github.com/cuongchutan/sine_wave_ros2, in the "Actions" tab, you will see a list of workflow runs. Click on the workflow `build` to inspect.
 
+Unfortunately, the workflow is not fully passed.
+
 
 ### GitHub actions apply linting and formatting rules
 In my repository, the GitHub actions for builing the repo is provided with the file `.git/workflows/lint_and_format.yml`.
 
 Go to my GitHub repository https://github.com/cuongchutan/sine_wave_ros2, in the "Actions" tab, you will see a list of workflow runs. Click on the workflow `lint_and_format` to inspect.
 
+Unfortunately, the workflow is not fully passed.
 
 ### Unit tests (Python)
 Due to many errors while building the unit tests for C++ in `CMakeLists.txt`, only unit tests for Python are currently available. These Python tests require `pytest` to be install:
@@ -307,5 +323,6 @@ The output should be all OK!
   colcon build --packages-select grayscale_image
   colcon build
 ```
-2. If you insert an empty demo image (e.g. due to wrong path), there will be a warning `Failed to read image from ...` in the logger.
-3. If the client is waiting too long for a service (e.g. due to non-exist or wrong name), there will be a warning `Service is not available`.
+2. If you encounter problems *This environment is externally managed ...* while installing dependencies using `pip`, it is recommeded to create a virtual environment and install the dependencies inside that.
+3. If you insert an empty demo image (e.g. due to wrong path), there will be a warning `Failed to read image from ...` in the logger.
+4. If the client is waiting too long for a service (e.g. due to non-exist or wrong name), there will be a warning `Service is not available`.
