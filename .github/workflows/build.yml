@@ -1,0 +1,42 @@
+name: GitHub actions are building the repo for my ROS2 project
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up ROS 2 Jazzy
+        run: |
+          sudo sh -c 'echo "deb [arch=amd64] http://packages.osrfoundation.org/debian/jazzy-stable main" > /etc/apt/sources.list.d/ros2-jazzy.list'
+          sudo apt-get update
+          sudo apt-get install -y ros-jazzy-ros-core ros-jazzy-ros-base ros-jazzy-rqt ros-jazzy-rqt-plot
+          source /opt/ros/jazzy/setup.bash
+
+      - name: Build workspace
+        run: |
+          cd ~/cuong_internBMW_ros2_jazzy
+          colcon build --merge-install
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.12'
+
+      - name: Install Python dependencies
+        run: |
+          pip3 install -r src/sine_wave/requirements.txt
+
+      - name: Run tests
+        run: |
+          pytest
