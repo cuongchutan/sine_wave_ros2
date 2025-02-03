@@ -259,9 +259,28 @@ We will extend the Publisher node with a custom Service `grayscale_srv_cpp` call
 
 This service will convert the image into grayscale using OpenCV libraray `cv2`, and then save the converted image at `grayscale_file_path/`.
 
+If you run the launch file again, the output should similar to:
+```
+[sine_wave_subscriber_cpp-2] [INFO] [1738572305.125512845] [sine_wave_subscriber_cpp]: sine_wave_subscriber_cpp node is started.
+[sine_wave_publisher_cpp-1] [INFO] [1738572305.125557903] [sine_wave_publisher_cpp]: sine_wave_publisher_cpp node is started.
+[sine_wave_publisher_cpp-1] [INFO] [1738572305.134984626] [sine_wave_publisher_cpp]: Published: 0.009370
+[sine_wave_subscriber_cpp-2] [INFO] [1738572305.135186519] [sine_wave_subscriber_cpp]: Subscribed: 0.009370
+[sine_wave_publisher_cpp-1] [INFO] [1738572305.261718841] [sine_wave_publisher_cpp]: Grayscale image saved at: ~/cuong_internBMW_ros2/install/sine_wave/share/sine_wave/image/grayscale_image_cpp.png
+```
+
 #### Python
 Similar to C++, but the service's name is `grayscale_srv` and the saved path is slightly different.
 
+If you run the launch file again, the output should similar to:
+```
+[sine_wave_publisher.py-1] [INFO] [1738572127.974781525] [sine_wave_publisher]: Published: 0.2633154091947927
+[sine_wave_subscriber.py-2] [INFO] [1738572127.974975076] [sine_wave_subscriber]: Grayscale image saved at: ~/cuong_internBMW_ros2/install/sine_wave/share/sine_wave/image/grayscale_image.png
+[sine_wave_subscriber.py-2] [INFO] [1738572127.975286051] [sine_wave_subscriber]: Subscribed: 0.2633154094219208
+[sine_wave_publisher.py-1] [INFO] [1738572128.105605125] [sine_wave_publisher]: Published: 0.3868943402661164
+[sine_wave_subscriber.py-2] [INFO] [1738572128.105654371] [sine_wave_subscriber]: Service call succeeded
+[sine_wave_subscriber.py-2] [INFO] [1738572128.105809884] [sine_wave_subscriber]: Grayscale image saved at: ~/cuong_internBMW_ros2/install/sine_wave/share/sine_wave/image/grayscale_image.png
+[sine_wave_subscriber.py-2] [INFO] [1738572128.106081604] [sine_wave_subscriber]: Subscribed: 0.3868943452835083
+```
 
 ### How to see the converted image
 The service should convert this image into grayscale:
