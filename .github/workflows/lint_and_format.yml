@@ -23,7 +23,7 @@ jobs:
 
       - name: Install Python dependencies
         run: |
-          pip3 install -r src/sine_wave/requirements.txt
+          pip3 install -r sine_wave/requirements.txt
 
       - name: Run linters for sine_wave
         uses: ros-tooling/action-ros-lint@master

@@ -30,7 +30,7 @@ jobs:
 
       - name: Build workspace
         run: |
-          cd ~/cuong_internBMW_ros2_jazzy
+          cd /home/cuongchutan/cuong_internBMW_ros2_jazzy
           colcon build --merge-install
 
       - name: Set up Python
@@ -40,7 +40,7 @@ jobs:
 
       - name: Install Python dependencies
         run: |
-          pip3 install -r src/sine_wave/requirements.txt
+          pip3 install -r sine_wave/requirements.txt
 
       - name: Run tests
         run: |
