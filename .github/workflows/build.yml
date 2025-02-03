@@ -28,19 +28,19 @@ jobs:
           sudo apt install ros-jazzy-desktop
           sudo apt install ros-jazzy-ros-base
 
-      # - name: Build workspace
-      #   run: |
-      #     cd /home/cuongchutan/cuong_internBMW_ros2_jazzy
-      #     colcon build --merge-install
+      - name: Build workspace
+        run: |
+          cd /home/cuongchutan/cuong_internBMW_ros2_jazzy
+          colcon build --merge-install
 
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.12'
 
-      # - name: Install Python dependencies
-      #   run: |
-      #     pip3 install -r sine_wave/requirements.txt
+      - name: Install Python dependencies
+        run: |
+          pip3 install -r sine_wave/requirements.txt
 
       - name: Run tests
         run: |
