@@ -21,9 +21,9 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install Python dependencies
-        run: |
-          pip3 install -r sine_wave/requirements.txt
+      # - name: Install Python dependencies
+      #   run: |
+      #     pip3 install -r sine_wave/requirements.txt
 
       - name: Run linters for sine_wave
         uses: ros-tooling/action-ros-lint@master
