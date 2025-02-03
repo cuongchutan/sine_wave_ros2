@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>sine_wave</name>
+  <version>0.0.0</version>
+  <description>Compute the value of a sine wave on a topic at a given frequency</description>
+  <maintainer email="cuongchutan@gmail.com">cuongchutan</maintainer>
+  <license>BSD-3-Clause</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>rclcpp</depend>
+  <depend>std_msgs</depend>
+  <depend>opencv</depend>
+  <depend>grayscale_image</depend>
+
+  <depend>generate_parameter_library</depend>
+  <depend>generate_parameter_library_py</depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+  <test_depend>ament_cmake_pytest</test_depend>
+  <test_depend>ament_cmake_gtest</test_depend>
+  <!-- <test_depend>gtest</test_depend> -->
+  
+  <buildtool_depend>ament_cmake_python</buildtool_depend>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>yaml</exec_depend>
+  <exec_depend>opencv-python</exec_depend>
+
+  <exec_depend>ros2launch</exec_depend>
+
+  <buildtool_export_depend>ament_cmake_core</buildtool_export_depend>
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

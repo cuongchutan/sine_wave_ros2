@@ -1,0 +1,21 @@
+sine_wave:
+  publisher_frequency:
+    type: double
+    default_value: 100.0
+    read_only: True
+    description: "The frequency to publish data of the Publisher" 
+  amplitude:
+    type: double
+    default_value: 1.0
+    read_only: True
+    description: "The amplitude of a sine wave" 
+  angular_frequency:
+    type: double
+    default_value: 1.0
+    read_only: True
+    description: "The angular frequency of a sine wave" 
+  phase:
+    type: double
+    default_value: 0.0
+    read_only: True
+    description: "The initial phase of a sine wave" 
