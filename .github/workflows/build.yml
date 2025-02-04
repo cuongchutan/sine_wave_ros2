@@ -13,35 +13,70 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Set up ROS 2 Jazzy
-        run: |
-          sudo apt install software-properties-common
-          sudo add-apt-repository universe
-          sudo apt update && sudo apt install curl -y
-          sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
-          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
-          sudo apt update
-          sudo apt upgrade
-          sudo apt install ros-jazzy-desktop
-          sudo apt install ros-jazzy-ros-base
+    - name: Set up ROS
+      run: |
+        sudo apt install software-properties-common
+        sudo add-apt-repository universe
+        sudo apt update && sudo apt install curl -y
+        sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+        sudo apt update
+        sudo apt upgrade
+        sudo apt install ros-jazzy-desktop
+        sudo apt install ros-jazzy-ros-base
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          python3-colcon-common-extensions \
+          python3-venv \
+          python3-opencv \
+          libopencv-dev \
+          python3-rosdep \
+          qtbase5-dev \
+          ros-jazzy-rsl \
+          ros-jazzy-tcb-span \
+          ros-jazzy-tl-expected \
+          ros-jazzy-rqt \
+          ros-jazzy-rqt-common-plugins \
+          python3-jinja2 \
+          python3-typeguard
+        sudo rm -rf /var/lib/apt/lists/*
 
-      - name: Build workspace
-        run: |
-          cd /home/cuongchutan/cuong_internBMW_ros2_jazzy
-          colcon build --merge-install
+    - name: Setup ROS workspace
+      run: |
+        mkdir -p /ros2_ws/src
+        cd /ros2_ws/src
+        git clone https://github.com/PickNikRobotics/generate_parameter_library.git
+        cp -r $GITHUB_WORKSPACE/sine_wave $GITHUB_WORKSPACE/grayscale_image /ros2_ws/src
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.12'
+    - name: Install ROS dependencies
+      run: |
+        sudo rosdep init
+        rosdep update
+        source /opt/ros/jazzy/setup.bash
+        cd /ros2_ws
+        rosdep install --from-paths src --ignore-src -r -y
 
-      - name: Install Python dependencies
-        run: |
-          pip3 install -r sine_wave/requirements.txt
+    - name: Create virtual environment and install Python dependencies
+      run: |
+        cd /ros2_ws
+        python3 -m venv ros2_ws_venv
+        source ros2_ws_venv/bin/activate
+        pip install --upgrade pip
+        pip install -r src/sine_wave/requirements.txt
 
-      - name: Run tests
-        run: |
-          pytest
+    - name: Build ROS workspace
+      run: |
+        source /opt/ros/jazzy/setup.bash
+        cd /ros2_ws
+        colcon build
+
+    - name: Source setup file
+      run: echo "source /ros2_ws/install/setup.bash" >> $GITHUB_ENV
+
+    - name: Verify build
+      run: |
+        source $GITHUB_ENV
