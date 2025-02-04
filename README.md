@@ -35,9 +35,9 @@ These tasks has been done by Cuong Chu Tan (cuongchutan@gmail.com) to apply for 
 
 ## Preparations
 
-These tasks has been tested with **Python** *3.12.3* and **ROS2 Jazzy** in **WSL** (*Ubuntu 24.04.1 LTS*).
+This section will instruct you how to build the project, and it is similar to the workflow of the **Dockerfile** in section 3. 
 
-To examine these tasks, you first have to clone my repository to your local machine: 
+These tasks has been tested with **Python** *3.12.3* and **ROS2 Jazzy** in **WSL** (*Ubuntu 24.04.1 LTS*). To examine them, you first have to clone my repository to your local machine: 
 
 ```bash
   cd /path/to/your/workspace
@@ -46,17 +46,34 @@ To examine these tasks, you first have to clone my repository to your local mach
   git clone https://github.com/PickNikRobotics/generate_parameter_library.git 
 ```
 
-There should be 3 packages in your src directory now: ***generate_parameter_library***, ***grayscale_image***, ***sine_wave***. Make sure that these packages are in this path `workspace/src/`
+There should be 3 packages in your src directory now: ***generate_parameter_library***, ***grayscale_image***, ***sine_wave***. Make sure that these packages are in this path `workspace/src/` (You can manually move all the files inside `sine_wave_ros2` directory to theirs parent directory, then remove the empty `sine_wave_ros2` folder.)
 
-Now, let's install all the necessary dependencies and build these packages:
+Now, let's install all the necessary ROS dependencies:
 ```bash
-  cd ..
-  sudo apt install python3-rosdep
-  sudo apt update
+  cd /path/to/your/workspace
+  sudo apt-get update
+  sudo apt-get install -y build-essential python3-colcon-common-extensions python3-venv python3-opencv libopencv-dev python3-rosdep qtbase5-dev ros-jazzy-rsl ros-jazzy-tcb-span ros-jazzy-tl-expected ros-jazzy-rqt ros-jazzy-rqt-common-plugins python3-jinja2 python3-typeguard
+  sudo rm -rf /var/lib/apt/lists/*
+
   sudo rosdep init
   rosdep update
+  source /opt/ros/jazzy/setup.bash
   rosdep install --from-paths src --ignore-src -r -y
-  pip3 install -r src/sine_wave/requirements.txt
+```
+Don't forget to change `/path/to/your/workspace` to your real workspace. Next let's create a virtual environment for the workspace to install Python dependencies:
+
+```bash
+  cd /path/to/your/workspace
+  python3 -m venv ros2_ws_venv
+  source ros2_ws_venv/bin/activate
+  pip install --upgrade pip
+  pip install -r src/sine_wave/requirements.txt
+``` 
+
+Now we can build the ROS workspace:
+```bash
+  cd /path/to/your/workspace
+  source /opt/ros/jazzy/setup.bash
   colcon build
 ```
 
@@ -65,7 +82,6 @@ Then you need to source the install setup in every new terminal:
   source /path/to/your/workspace/install/setup.bash
 ```
 or add that line into **.bashrc** file (can be found at ~/). 
-Don't forget to change `/path/to/your/workspace` to your real workspace.
 
 After the packages has been built successfully, let's examine the tasks in details!
 ## Publisher/Subscriber
@@ -87,7 +103,7 @@ It will create a topic `sine_wave_cpp` that publishes a value for a sine wave at
 $$SineValue = Amplitude  \cdot  \sin(AngularFrequency \cdot time + phase)$$
 
 This node can run with the command:
-```
+```bash
   ros2 run sine_wave sine_wave_publisher_cpp
 ``` 
 
@@ -97,7 +113,7 @@ The node is created in the package ***sine_wave*** in the file `sine_wave/sine_w
 It will create a topic `sine_wave` that publishes a value for a sine wave at a time. The formular is the same as in C++
 
 This node can run with the command:
-```
+```bash
   ros2 run sine_wave sine_wave_publisher.py
 ``` 
 
@@ -111,7 +127,7 @@ The node is created in the package ***sine_wave*** in the file `src/sine_wave_su
 It will subscribe to the topic `sine_wave_cpp` and log the published data, which is the value of the sine wave at a time.
 
 This node can run with the command:
-```
+```bash
   ros2 run sine_wave sine_wave_subscriber_cpp
 ``` 
 
@@ -121,7 +137,7 @@ The node is created in the package ***sine_wave*** in the file `sine_wave/sine_w
 It will subscribe to the topic `sine_wave` and log the published data, which is the value of the sine wave at a time.
 
 This node can run with the command:
-```
+```bash
   ros2 run sine_wave sine_wave_subscriber.py
 ``` 
 
@@ -191,11 +207,11 @@ The launch file for C++ is created in the package ***sine_wave*** at `launch/sin
 It will run both the publisher node `sine_wave_publisher_cpp` and the subscriber node `sine_wave_subscriber_cpp`.
 
 This launch file can run with the command:
-```
+```bash
   ros2 launch sine_wave sine_wave_cpp_launch.py
 ``` 
 You can also check the running nodes by executing in a new terminal:
-```
+```bash
   ros2 topic info -v /sine_wave_cpp
 ```
 It should appear 2 nodes, one `sine_wave_publisher_cpp` for the publisher and the other `sine_wave_subscriber_cpp` for the subscriber.
@@ -206,11 +222,11 @@ The launch file for Python is created in the package ***sine_wave*** at `launch/
 It will run both the publisher node `sine_wave_publisher.py` and the subscriber node `sine_wave_subscriber.py`.
 
 This launch file can run with the command:
-```
+```bash
   ros2 launch sine_wave sine_wave_launch.py
 ``` 
 You can also check the running nodes by executing in a new terminal:
-```
+```bash
   ros2 topic info -v /sine_wave
 ```
 It should appear 2 nodes, one `sine_wave_publisher` for the publisher and the other `sine_wave_subscriber` for the subscriber.
@@ -221,13 +237,18 @@ It should appear 2 nodes, one `sine_wave_publisher` for the publisher and the ot
 **Task**: Show how to visualize the sine wave.
 
 --> It is recommended to install `rqt-plot` to visualize the plots for the sine waves:
-```
+```bash
   sudo apt-get install ros-jazzy-rqt ros-jazzy-rqt-plot
 ```
+For the visualization later, the parameters are set as following:
+- Publisher frequency = 100.0
+- Amplitude = 1.0
+- Angular frequency = 1.0
+- Phase = 0.0
 
 #### C++
 While launching using the launch file in previous section, you can open a new terminal and run:
-```
+```bash
   rqt
 ```
 A new window will pop up for user to select different ways to visualize data. In these tasks, it's great to show the sine wave in a plot.
@@ -295,35 +316,46 @@ While running the launch files, you might notice that the converted image is sav
 
 ## (Extra) Dockerfile
 
-I unfortunately don't have much experience on Docker. Even though, I have the gist of what I should do, and provide a `Dockerfile` that try to build and run the project from within the docker.
+Users need to install `Docker` application in order to use it. You can follow the instructions on installing from their manuals (https://docs.docker.com/engine/install/).
 
-In order to build the docker, go into the `workspace/src/` directory and run:
-```
+Afterwards, let's build the docker by going into the `workspace/src/` directory and running:
+```bash
   docker build -t ros2_sine_wave .
 ```
 where `-t ros2_sine_wave` tags the docker image with the name `ros2_sine_wave`, and `.` indicates that the Dockerfile is in the current directory.
 
 Afterwards, we can test if the image runs as expected by running the container from the image:
-```
+```bash
   docker run -it ros2_sine_wave
 ```
-However, since the docker is still not fully built, further validation will be tested in the future.
+If you want to use `rqt` in the container, running this command instead:
+```bash
+  docker run -it \
+      --env="DISPLAY=$DISPLAY" \
+      --env="QT_X11_NO_MITSHM=1" \
+      --env="XDG_RUNTIME_DIR=/tmp/runtime-root" \
+      --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
+      ros2_sine_wave
+```
+You will be redirected to the container, and from there you can examine all the tasks (for example, run the launch files, open `rqt` to visualize the sine wave, ...)
+
+To exit the container to go back to your local terminal, simply run:
+```bash
+  exit
+```
 ## Evaluation Criteria
 
 ### GitHub actions are building the repo
 In my repository, the GitHub actions for builing the repo is provided with the file `.git/workflows/build.yml`.
 
-Go to my GitHub repository https://github.com/cuongchutan/sine_wave_ros2, in the "Actions" tab, you will see a list of workflow runs. Click on the workflow `build` to inspect.
-
-Unfortunately, the workflow is not fully passed.
+Go to my GitHub repository https://github.com/cuongchutan/sine_wave_ros2, in the "Actions" tab, you will see a list of workflow runs. Click on the workflow `GitHub actions are building the repo for my ROS2 project` on the left tab to inspect the `build`.
 
 
 ### GitHub actions apply linting and formatting rules
 In my repository, the GitHub actions for builing the repo is provided with the file `.git/workflows/lint_and_format.yml`.
 
-Go to my GitHub repository https://github.com/cuongchutan/sine_wave_ros2, in the "Actions" tab, you will see a list of workflow runs. Click on the workflow `lint_and_format` to inspect.
+Go to my GitHub repository https://github.com/cuongchutan/sine_wave_ros2, in the "Actions" tab, you will see a list of workflow runs. Click on the workflow `GitHub actions apply linting and formatting rules for my ROS2 project` on the left tab to inspect the `lint_and_format`.
 
-Unfortunately, the workflow is not fully passed.
 
 ### Unit tests (Python)
 Due to many errors while building the unit tests for C++ in `CMakeLists.txt`, only unit tests for Python are currently available. These Python tests require `pytest` to be install:
@@ -345,6 +377,5 @@ The output should be all OK!
   colcon build --packages-select grayscale_image
   colcon build
 ```
-2. If you encounter problems *This environment is externally managed ...* while installing dependencies using `pip`, it is recommeded to create a virtual environment and install the dependencies inside that.
-3. If you insert an empty demo image (e.g. due to wrong path), there will be a warning `Failed to read image from ...` in the logger.
-4. If the client is waiting too long for a service (e.g. due to non-exist or wrong name), there will be a warning `Service is not available`.
+2. If you insert an empty demo image (e.g. due to wrong path), there will be a warning `Failed to read image from ...` in the logger. Ensure the input path is valid.
+3. If the client is waiting too long for a service (e.g. due to non-exist or wrong name), there will be a warning `Service is not available`.
