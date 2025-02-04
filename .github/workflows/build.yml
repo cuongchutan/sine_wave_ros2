@@ -47,22 +47,22 @@ jobs:
 
     - name: Setup ROS workspace
       run: |
-        mkdir -p /ros2_ws/src
-        cd /ros2_ws/src
+        mkdir -p $HOME/ros2_ws/src
+        cd $HOME/ros2_ws/src
         git clone https://github.com/PickNikRobotics/generate_parameter_library.git
-        cp -r $GITHUB_WORKSPACE/sine_wave $GITHUB_WORKSPACE/grayscale_image /ros2_ws/src
+        cp -r $GITHUB_WORKSPACE/sine_wave $GITHUB_WORKSPACE/grayscale_image $HOME/ros2_ws/src
 
     - name: Install ROS dependencies
       run: |
         sudo rosdep init
         rosdep update
         source /opt/ros/jazzy/setup.bash
-        cd /ros2_ws
+        cd $HOME/ros2_ws
         rosdep install --from-paths src --ignore-src -r -y
 
     - name: Create virtual environment and install Python dependencies
       run: |
-        cd /ros2_ws
+        cd $HOME/ros2_ws
         python3 -m venv ros2_ws_venv
         source ros2_ws_venv/bin/activate
         pip install --upgrade pip
@@ -71,11 +71,11 @@ jobs:
     - name: Build ROS workspace
       run: |
         source /opt/ros/jazzy/setup.bash
-        cd /ros2_ws
+        cd $HOME/ros2_ws
         colcon build
 
     - name: Source setup file
-      run: echo "source /ros2_ws/install/setup.bash" >> $GITHUB_ENV
+      run: echo "source $HOME/ros2_ws/install/setup.bash" >> $GITHUB_ENV
 
     - name: Verify build
       run: |
